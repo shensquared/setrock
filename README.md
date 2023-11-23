@@ -15,7 +15,7 @@ Most official MIT applications do use Shibboleth, but the [set up guide](https:/
 
 **So why OIDC?**
 
-Petrock models itself after `oidc.mit.edu`, which was an another MIT authentication service that uses the [OpenID Connect](https://www.pingidentity.com/en/resources/identity-fundamentals/authentication-authorization-standards/openid-connect.html) protocol. OIDC is an open-source protocol that has widespread library support across many different programming languages. In addition, we believe it's easier to use and understand for student web developers. 
+Petrock models itself after `oidc.mit.edu`, which was an another MIT authentication service that uses the [OpenID Connect](https://www.pingidentity.com/en/resources/identity-fundamentals/authentication-authorization-standards/openid-connect.html) protocol. OIDC is an open-source protocol that has widespread library support across many different programming languages. In addition, we believe it's easier to use and understand for student web developers. OIDC is also used in other authentication services like [Shimmer](https://shimmer.csail.mit.edu/) (operated by CSAIL) that powers most of Course 6 websites and CSAIL services.
 
 In addition, the Petrock project will be continually supported by **SIPB**, which is a student club responsible for other dependable services like: [Hydrant](http://hydrant.mit.edu/), [Courseroad](https://courseroad.mit.edu/road/$defaultroad$), and [Scripts](https://scripts.mit.edu/).
 
