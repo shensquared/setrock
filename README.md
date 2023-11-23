@@ -7,15 +7,17 @@
 - MIT students creating web services for the MIT community
 - MIT clubs and organizations that want to add Touchstone authentication to their backend services
 
-## Why not other MIT auth services?
+## Why not use other MIT auth services?
 
 Currently if you are a student developer creating individual web applications at MIT, the main way of getting user authentication for your website is through [Shibboleth](http://kb.mit.edu/confluence/display/istcontrib/Touchstone+FAQ). 
 
-Indeed, most official MIT applications uses Shibboleth, but the [set up guide](https://wikis.mit.edu/confluence/display/TOUCHSTONE/Provisioning+Steps) for Shibboleth can be cumbersome and confusing if you are not familiar with the protocol. Also, the simplest way to set it up requires using **Apache or building a custom version of Nginx** from source, which may not always be preferable (ex. if you want to deploy your web service on Heroku).
+Most official MIT applications do use Shibboleth, but the [set up guide](https://wikis.mit.edu/confluence/display/TOUCHSTONE/Provisioning+Steps) for Shibboleth can be cumbersome and confusing if you are not familiar with the protocol. Also, the simplest way to set it up requires using Apache or building a custom version of Nginx from source, which may not always be preferable.
 
-Petrock models itself after `oidc.mit.edu`, which was an another MIT authentication service that uses the [OpenID Connect](https://www.pingidentity.com/en/resources/identity-fundamentals/authentication-authorization-standards/openid-connect.html) protocol. OIDC is an open-source protocol that has widespread library support across many different programming languages. In addition, we believe it's easier to use + understand for student web developers. 
+**So why OIDC?**
 
-Indeed, CSAIL has their own OIDC auth service called [Shimmer](https://shimmer.csail.mit.edu/), which supports many of the Course 6 websites + CSAIL services, and is clear evidence for the usability of OIDC.
+Petrock models itself after `oidc.mit.edu`, which was an another MIT authentication service that uses the [OpenID Connect](https://www.pingidentity.com/en/resources/identity-fundamentals/authentication-authorization-standards/openid-connect.html) protocol. OIDC is an open-source protocol that has widespread library support across many different programming languages. In addition, we believe it's easier to use and understand for student web developers. 
+
+In addition, the Petrock project will be continually supported by **SIPB**, which is a student club responsible for other dependable services like: [Hydrant](http://hydrant.mit.edu/), [Courseroad](https://courseroad.mit.edu/road/$defaultroad$), and [Scripts](https://scripts.mit.edu/).
 
 ## I'm currently using `oidc.mit.edu`, how do I switch to Petrock?
 
