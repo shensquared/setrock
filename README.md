@@ -51,7 +51,7 @@ With this information, you should edit your configuration such that:
 2. OIDC Authority URI:
    1. Replace `https://oidc.mit.edu` with `https://petrock.mit.edu`
 3. Token Issuer:
-   1. Replace `https://oidc.mit.edu/` with `https:petrock.mit.edu` (no trailing slash)
+   1. Replace `https://oidc.mit.edu/` with `https://petrock.mit.edu` (no trailing slash)
 4. Auth endpoint:
    1. Replace `/authorize` with `/touchstone/oidc/authorization`
 5. Token endpoint:
