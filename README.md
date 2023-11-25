@@ -1,4 +1,4 @@
-# PetRock
+# Petrock
 
 [Petrock](https://petrock.mit.edu/) is an authentication service that allows for MIT students to quickly add Touchstone authentication to their website. It is an student-made replacement for the now defunct MIT OIDC Pilot ([oidc.mit.edu](https://oidc.mit.edu)) service.
 
@@ -26,13 +26,17 @@ Depending on what library/ custom code you're using to support the OpenID Connec
 First, you'll need to email us at `petrock@mit.edu`, and provide the following information:
 
 - Name of your web service
+- The purpose of your web service
+- A primary contact email
 - List of redirect URL(s) that can receive successful authentication response
   - These should be the server endpoint(s) that is able to receive the authentication `code` after a successful user login
   - We allow for multiple in case you have multiple servers (e.g., a testing + production) running the same service
 
 For example, given a service like [SIPB DormDigest](https://dormdigest.mit.edu/), we would have:
 
-- Name of your web service: `DormDigest`
+- Name: `DormDigest`
+- Purpose: `DormDigest automatically parses dormspam emails by type onto a web calendar, and we require authentication to login to protect the privacy of students emails.`
+- Contact email: `sipb-dormdigest-admin@mit.edu`
 - List of redirect URL(s):
   - `https://dormdigest.mit.edu/oidc-response`,
   - `https://dormdigest.xvm.mit.edu/oidc-response`

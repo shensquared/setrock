@@ -1,0 +1,21 @@
+
+body, code {
+   font-family: 'Ubuntu Mono', Hack, Monaco, Consolas, Courier, monospace;
+}
+body { max-width: 80ch; }
+/*body { line-height: 150%; }*/
+code { background: #FFC10744 }
+
+.figure {
+   max-width: 72ch;
+   width: 80%;
+   margin: 0 auto;
+}
+.caption {
+   text-align: left;
+   max-width: 72ch;
+   width: 80%;
+   margin: 0 auto;
+}
+
+

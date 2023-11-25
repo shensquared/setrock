@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="description" content="How to get started with Petrock, an authentication service for MIT students using OpenID Connect."/>
+   <!--<meta name="robots" content="nofollow,noarchive"/>-->
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+   <title>About Petrock</title>
+   <link rel="icon" type="image/x-icon" href="favicon.v1.ico">
+   <link rel="stylesheet" href="css/v1.css">
+</head>
+<body>
+   <a id="top"></a>
+
+   <a href="https://petrock.mit.edu/">(Back to home page)</a>
+
+   <p><b>Jump to:</b>
+   <ul>
+      <li><a href="#about-petrock"><b>About Petrock</b></a></li>
+      <li><a href="#who-is-this-service-for"><b>Who is this service for?</b></a></li>
+      <li><a href="#why-not-other-services"><b>Why not use other MIT auth services?</b></a><ul>
+         <li><a href="#why-oidc">So why OIDC?</a></li></ul></li>
+      <li><a href="#transfer-from-oidc-pilot"><b>I'm currently using <code>oidc.mit.edu</code>, how do I switch to Petrock?</b></a><ul>
+         <li><a href="#example-transfer">Example</a></li>
+         <li><a href="#editing-configuration">Editing your configuration</a></li></ul></li>
+   </ul></p>
+
+   <h1 id="about-petrock">About Petrock</h1>
+
+   <p><b>Petrock</b> is an authentication service that allows for MIT students to quickly add Touchstone authentication to their website. It is a student-made replacement for the now decommissioned MIT OIDC Pilot service (<a href="https://web.archive.org/web/20220817020717/http://oidc.mit.edu/">oidc.mit.edu</a>).
+
+   <h1 id="who-is-this-service-for">Who is this service for?</h2>
+
+   <p><ul>
+      <li>MIT students creating web services for the MIT community</li>
+      <li>MIT clubs and organizations that want to add Touchstone authentication to their backend services</li>
+   </ul></p>
+
+   <h1 id="why-not-other-services">Why not use other MIT auth services?</h2>
+
+   <p>Currently if you are a student developer creating individual web applications at MIT, the main way of getting user authentication for your website is through <a href="http://kb.mit.edu/confluence/display/istcontrib/Touchstone+FAQ">Shibboleth</a>.</p>
+
+   <p>Most official MIT applications do use Shibboleth, but the <a href="https://wikis.mit.edu/confluence/display/TOUCHSTONE/Provisioning+Steps">set up guide</a> for Shibboleth can be cumbersome and confusing if you are not familiar with the protocol. Also, the simplest way to set it up requires using Apache or building a custom version of Nginx from source, which may not always be preferable.</p>
+
+   <h2 id="why-oidc">So why OIDC?</h2>
+
+   <p>Petrock models itself after <code>oidc.mit.edu</code>, which was an another MIT authentication service that uses the <a href="https://www.pingidentity.com/en/resources/identity-fundamentals/authentication-authorization-standards/openid-connect.html">OpenID Connect</a> protocol. OIDC is an open-source protocol that has widespread library support across many different programming languages. In addition, we believe it's easier to use and understand for student web developers. OIDC is also used in other authentication services like <a href="https://shimmer.csail.mit.edu/">Shimmer</a> (operated by CSAIL) that powers most of Course 6 websites and CSAIL services.</p>
+
+   <p>In addition, the Petrock project will be continually supported by <a href="https://sipb.mit.edu"><b>SIPB</b></a>, which is a student club responsible for other dependable services like: <a href="https://hydrant.mit.edu/">Hydrant</a>, <a href="https://courseroad.mit.edu/road/$defaultroad$">Courseroad</a>, and <a href="https://scripts.mit.edu/">Scripts</a>.</p>
+
+   <h1 id="transfer-from-oidc-pilot">I'm currently using <code>oidc.mit.edu</code>, how do I switch to Petrock?</h1>
+
+   <p>Depending on what library/custom code you're using to support the OpenID Connect protocol, the main changes would be with editing your configuration to use Petrock endpoints instead of the old OIDC Pilot endpoints.</p>
+
+   <p>First, you'll need to email us at <code>petrock@mit.edu</code>, and provide the following information:
+   <ul>
+      <li><b>Name</b> of your web service</li>
+      <li>The <b>purpose</b> of your web service</li>
+      <li>A primary <b>contact email</b></li>
+      <li>List of <b>redirect URL(s)</b> that can receive successful authentication response<ul>
+         <li>These should be the server endpoint(s) that is able to receive the authentication <code>code</code> after a successful user login</li>
+         <li>We allow for multiple in case you have multiple servers (e.g., a testing + production) running the same service</li>
+      </ul></li>
+   </ul></p>
+
+   <h2 id="example-transfer">Example</h2>
+
+   <p>For example, given a service like <a href="https://dormdigest.mit.edu/">SIPB DormDigest</a>, we would have:
+   <ul>
+      <li><b>Name</b>: <code>DormDigest</code></li>
+      <li><b>Purpose</b>: <code>DormDigest automatically parses dormspam emails by type onto a web calendar, and we require authentication to login to protect the privacy of students emails.</code></li>
+      <li><b>Contact email</b>: <code>sipb-dormdigest-admin@mit.edu</code></li>
+      <li><b>Redirect URL(s)</b>:<ul>
+         <li><code>https://dormdigest.mit.edu/oidc-response</code></li>
+         <li><code>https://dormdigest.xvm.mit.edu/oidc-response</code></li>
+      </ul></li>
+   </ul></p>
+
+   <p>We'll then email you back with:
+   <ul>
+      <li>a <code>client_id</code> (safe to store in Github + publicly)</li>
+      <li>a <code>client_secret</code> (MUST BE KEPT SECRET)</li>
+   </ul></p>
+
+   <h2 id="editing-configuration">Editing your configuration</h2>
+
+   <p>With this information, you should edit your configuration such that:
+   <ol>
+      <li><code>client_id</code> and <code>client_secret</code>: Replace with corresponding values we gave you</li>
+      <li>OIDC Authority URI: Replace <code>https://oidc.mit.edu</code> with <code>https://petrock.mit.edu</code></li>
+      <li>Token Issuer: Replace <code>https://oidc.mit.edu/</code> with <code>https://petrock.mit.edu</code> (no trailing slash)</li>
+      <li>Auth endpoint: Replace <code>/authorize</code> with <code>/touchstone/oidc/authorization</code></li>
+      <li>Token endpoint: Replace <code>/token</code> wit <code>/oidc/token</code></li>
+      <li>Public key endpoint: Replace <code>/jwk</code> with <code>/oidc/jwks</code></li>
+   </ol></p>
+
+   <p>For step 4-6, you might need to specify the full URL, so for example you might be going from:
+   <ul>
+      <li><code>https://oidc.mit.edu/authorize</code> </li>
+      <li>to <code>https://petrock.mit.edu/touchstone/oidc/authorization</code></li>
+   </ul></p>
+
+   <p>Once you restart your services with these changes, you should now be able to authenticate using Petrock.</p>
+
+   <a href="#top">(Jump back to top)</a>
+   <!--<p><a href="https://accessibility.mit.edu/">Accessibility</a></p>-->
+
+   <br/><br/><br/><br/><br/><br/>
+   <br/><br/><br/><br/><br/><br/>
+</body>
+</html>
