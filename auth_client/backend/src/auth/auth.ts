@@ -5,6 +5,8 @@ import jwkToPem from "jwk-to-pem";
 import { AUTH_CONFIG } from "./authConfig";
 import { eqSet } from "./authHelper";
 import { jwkResponse, loginResponse, oidcToken, userInfoResponse, idToken } from "./authType";
+import { getSessionId } from "./authSession";
+
 /**
  * Handles the login procedure given an OpenID auth code (which may or may not be valid)
  */
@@ -15,7 +17,8 @@ async function handleLogin(req: Request, res: Response) {
         success: true,
         error_msg: "",
         id_token: "",
-        email: ""
+        email: "",
+        session_id: ""
     };
     /**
      * Helper function: Instruct the client browser to clear the nonce cookie
@@ -79,16 +82,20 @@ async function handleLogin(req: Request, res: Response) {
     const oidcJSON: oidcToken = oidcResponse.data;
 
     //Verify that user provided us with necessary scope
-    const hasToken = oidcJSON.hasOwnProperty("id_token");
-    const hasScope = oidcJSON.hasOwnProperty("scope");
-    const expectedScope = new Set(AUTH_CONFIG.scope.split(" "));
-    const givenScope =
-        hasScope && oidcJSON.scope ? new Set<String>(oidcJSON.scope.split(" ")) : new Set<String>();
-    const hasFullScope = eqSet(expectedScope, givenScope);
-    if (!hasFullScope || !hasToken) {
-        respondWithError("User Error: Please make sure you allow the necessary scopes!");
-        return;
-    }
+
+    // WARNING: Returning the list of requested scopes is specific to OIDC Pilot *only*
+    //          Don't depend on this field being populated in normal OIDC servers
+
+    // const hasToken = oidcJSON.hasOwnProperty("id_token");
+    // const hasScope = oidcJSON.hasOwnProperty("scope");
+    // const expectedScope = new Set(AUTH_CONFIG.scope.split(" "));
+    // const givenScope =
+    //     hasScope && oidcJSON.scope ? new Set<String>(oidcJSON.scope.split(" ")) : new Set<String>();
+    // const hasFullScope = eqSet(expectedScope, givenScope);
+    // if (!hasFullScope || !hasToken) {
+    //     respondWithError("User Error: Please make sure you allow the necessary scopes!");
+    //     return;
+    // }
 
     //Check token_type is correct
     const correctTokenType = oidcJSON.token_type === AUTH_CONFIG.tokenType;
@@ -146,9 +153,18 @@ async function handleLogin(req: Request, res: Response) {
             const profileResults = await getUserInfo(oidcJSON.access_token, decoded);
 
             if (profileResults.success) {
-                userResponse.success = true;
-                userResponse.id_token = oidcJSON.id_token;
-                userResponse.email = profileResults.email;
+                //With the email, proceed to get user's session ID
+                const sessionIdResults = await getSessionId(profileResults.email);
+
+                if(sessionIdResults.success){
+                    userResponse.success = true;
+                    userResponse.id_token = oidcJSON.id_token;
+                    userResponse.email = profileResults.email;
+                    userResponse.session_id = sessionIdResults.session_id;
+                } else {
+                    userResponse.success = false;
+                    userResponse.error_msg = sessionIdResults.error_msg;
+                }
                 clearNonceCookie();
                 res.status(200).json(userResponse);
             } else {
@@ -165,7 +181,6 @@ async function handleLogin(req: Request, res: Response) {
  * Given a valid access_token and id_token (parsed into its object representation),
  * query the OIDC User Information endpoint and return profile info.
  *
- * Query follows process described in: https://datatracker.ietf.org/doc/html/rfc6750#section-2.1
  *
  * For our basic example case, we will just or the user's email (defined in our authConfig.ts' scope)
  *
@@ -186,6 +201,7 @@ async function getUserInfo(access_token: string, id_token: object): Promise<user
         //TODO: The Client MUST verify that the OP that responded was the intended OP through a TLS server certificate check, per RFC 6125 [RFC6125].
 
         userInfoResults.email = oidcResponse.data.email; //Get email from JSON object
+        
     } catch (error) {
         userInfoResults.success = false;
         userInfoResults.error_msg =

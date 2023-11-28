@@ -8,7 +8,7 @@
         "typescript": "^4.9.5"
     },
     "name": "mit-oidc-client-backend",
-    "description": "Unofficial backend client template for MIT OpenID Connect (OIDC) service",
+    "description": "Backend client template for MIT OpenID Connect (OIDC) service",
     "version": "1.0.0",
     "main": "index.js",
     "scripts": {
@@ -17,16 +17,8 @@
         "build": "rimraf ./build && tsc",
         "start": "npm run build && node build/index.js"
     },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/mit-oidc-client/mit-oidc-client.git"
-    },
-    "author": "huydai@mit.edu",
+    "author": "petrock@mit.edu",
     "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/mit-oidc-client/mit-oidc-client/issues"
-    },
-    "homepage": "https://github.com/mit-oidc-client/mit-oidc-client#readme",
     "dependencies": {
         "@types/jwk-to-pem": "^2.0.1",
         "axios": "^1.4.0",

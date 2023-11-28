@@ -22,6 +22,7 @@ interface AuthConfig {
     //Client-specific configs 
     redirect_uri: string,           ///Endpoint to receive authorization response 
     login_uri: string,              //Backend URI to handle user code
+    session_id_uri: string,         //Backend URI to handle assigning new session IDs
     client_id: string,              //The client application's identifier (as registered with the OIDC provider)
     client_secret: string,         //The client application's identifier (as registered with the OIDC provider) - DO NOT EXPOSE PUBLICLY
     scope: string,                  //The scope being requested from the OIDC provider
@@ -35,25 +36,26 @@ interface AuthConfig {
     nonce_cookie_options: CookieOptions
 } 
 
-const OIDC_AUTHORITY_URI = "https://oidc.mit.edu"; 
-const DOMAIN_URI = "https://unofficial-oidc-client.xvm.mit.edu"
+const OIDC_AUTHORITY_URI = "https://petrock.mit.edu"; 
+const DOMAIN_URI = "https://unofficial-oidc-client.xvm.mit.edu/";
 
 export const AUTH_CONFIG: AuthConfig = {
 
     //OIDC provider-specific configs
-    auth_endpoint: OIDC_AUTHORITY_URI + "/authorize",
-    token_endpoint: OIDC_AUTHORITY_URI + "/token",
-    user_info_endpoint: OIDC_AUTHORITY_URI + "/userinfo",
-    public_key: OIDC_AUTHORITY_URI + "/jwk",
+    auth_endpoint: OIDC_AUTHORITY_URI + "/touchstone/oidc/authorization",
+    token_endpoint: OIDC_AUTHORITY_URI + "/oidc/token",
+    user_info_endpoint: OIDC_AUTHORITY_URI + "/oidc/userinfo",
+    public_key: OIDC_AUTHORITY_URI + "/oidc/jwks",
     response_type: "code",
     grantType: "authorization_code",                    //mandated by MIT OIDC server
     tokenType: "Bearer",                                //mandated by MIT OIDC server
-    tokenIssuer: "https://oidc.mit.edu/",               //NOTE the trailing slash
-
+    tokenIssuer: OIDC_AUTHORITY_URI,               
+    
     //Client-specific configs 
     redirect_uri: DOMAIN_URI + "/oidc-response", 
     login_uri: DOMAIN_URI + "/api/login",
-    client_id: "2cfc993e-45d8-45e3-aaa6-78ef8717cb96", //Safe to save client-side
+    session_id_uri: DOMAIN_URI + ":8432/create_session", //Note: Currently using port 8432 for Python backend
+    client_id: "YOUR_CLIENT_ID_HERE", //Safe to save client-side 
     client_secret: secrets["client_secret"], 
     scope: "openid email",                             //depends on your application needs
 
