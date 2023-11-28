@@ -23,7 +23,7 @@ In addition, the Petrock project will be continually supported by **SIPB**, whic
 
 Depending on what library/ custom code you're using to support the OpenID Connect protocol, the main changes would be with editing your configuration to use Petrock endpoints instead of the old OIDC Pilot endpoints.
 
-First, you'll need to email us at `petrock@mit.edu`, and provide the following information:
+First, you'll need to fill out a Google Form [here](https://forms.gle/ErvvM91sh2DVTgEg7), and provide the following information:
 
 - Name of your web service
 - The purpose of your web service
@@ -41,8 +41,7 @@ For example, given a service like [SIPB DormDigest](https://dormdigest.mit.edu/)
   - `https://dormdigest.mit.edu/oidc-response`,
   - `https://dormdigest.xvm.mit.edu/oidc-response`
 
-
-We'll then email you back with:
+We'll then email you at your contact email with:
 
 - a `client_id` (safe to store in Github + publicly)
 - a `client_secret` (MUST BE KEPT SECRET)
@@ -59,9 +58,14 @@ With this information, you should edit your configuration such that:
 4. Auth endpoint:
    1. Replace `/authorize` with `/touchstone/oidc/authorization`
 5. Token endpoint:
-   1. Replace `/token` wit `/oidc/token`
-6. Public key endpoint:
+   1. Replace `/token` with `/oidc/token`
+6. User Info endpoint:
+   1. Replace `/userinfo` with `/oidc/userinfo`
+7. Public key endpoint:
    1. Replace `/jwk` with `/oidc/jwks`
+8. OIDC scopes
+   1. Make sure it includes `openid`, `email`, and `profile` 
+   2. Ex. `openid email profile`
 
 For step 4-6, you might need to specify the full URL, so for example you might be going from:
 
@@ -69,3 +73,14 @@ For step 4-6, you might need to specify the full URL, so for example you might b
  - to `https://petrock.mit.edu/touchstone/oidc/authorization`
 
 Once you restart your services with these changes, you should now be able to authenticate using Petrock.
+
+## What information can I query?
+
+Given a user's access token (see [this guide](https://developer.okta.com/blog/2019/10/21/illustrated-guide-to-oauth-and-oidc) if you're unsure what that is), you can query Petrock's user info endpoint at `https://petrock.mit.edu/oidc/userinfo`. The access token will need to be provided in the HTTP Authorization header using Bearer scheme ([see](https://swagger.io/docs/specification/authentication/bearer-authentication/)).
+
+Assuming you set your OIDC scopes as described above (with `openid`, `email`, and `profile`), you will be able to get back a JSON with the following keys:
+
+- `email` - Student email
+- (??) `name` - Full name
+- (??) `gender` - MIT affiliation (ex. `student`) 
+- (??) IDK what else
