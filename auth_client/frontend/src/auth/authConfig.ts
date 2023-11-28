@@ -18,8 +18,12 @@ interface AuthConfig {
     //client_secret: string,         //The client application's identifier (as registered with the OIDC provider) - DO NOT EXPOSE PUBLICLY
     scope: string; //The scope being requested from the OIDC provider
 
-    idtoken_localstorage_name: string; //Name to be given to variable in Local Storage that contains the user's id_token
-    //(upon successful authentication)
+    idtoken_localstorage_name: string;   //Name of variable in Local Storage that contains the user's id_token
+                                         //(upon successful authentication)
+    sessionid_localstorage_name: string; //Name of session ID variable in localStorage
+                                         //(upon successful authentication)
+    useremail_localstoragge_name: string; //Name of user email variable in localStorage
+                                          //(upon successful authentication)
     state_length: number; //The byte length of `state` variable to be sent as part of login request
     nonce_length: number; //The byte length of `state` variable to be generated as part of login flow
     state_localstorage_name: string; //Name of state variable stored in LocalStorage
@@ -27,28 +31,29 @@ interface AuthConfig {
     nonce_cookie_options: CookieSetOptions;
 }
 
-const OIDC_AUTHORITY_URI = "https://oidc.mit.edu";
+const OIDC_AUTHORITY_URI = "https://petrock.mit.edu";
 const DOMAIN_URI = "https://unofficial-oidc-client.xvm.mit.edu";
 
 export const AUTH_CONFIG: AuthConfig = {
     //OIDC provider-specific configs
-    auth_endpoint: OIDC_AUTHORITY_URI + "/authorize",
-    token_endpoint: OIDC_AUTHORITY_URI + "/token",
-    user_info_endpoint: OIDC_AUTHORITY_URI + "/userinfo",
-    public_key: OIDC_AUTHORITY_URI + "/jwk",
+    auth_endpoint: OIDC_AUTHORITY_URI + "/touchstone/oidc/authorization",
+    token_endpoint: OIDC_AUTHORITY_URI + "/oidc/token",
+    user_info_endpoint: OIDC_AUTHORITY_URI + "/oidc/userinfo",
+    public_key: OIDC_AUTHORITY_URI + "/oidc/jwks",
     response_type: "code",
     grantType: "authorization_code", //mandated by MIT OIDC server
     tokenType: "Bearer", //mandated by MIT OIDC server
-    tokenIssuer: "https://oidc.mit.edu/", //NOTE the trailing slash
+    tokenIssuer: OIDC_AUTHORITY_URI,
 
     //Client-specific configs
     redirect_uri: DOMAIN_URI + "/oidc-response",
     login_uri: DOMAIN_URI + "/api/login",
-    client_id: "2cfc993e-45d8-45e3-aaa6-78ef8717cb96", //Safe to save client-side
-    //client_secret: secrets["client_secret"],
-    scope: "openid email", //depends on your application needs
+    client_id: "YOUR_CLIENT_ID_HERE", //Safe to save client-side
+    scope: "openid email profile", //depends on your application needs
 
     idtoken_localstorage_name: "id_token",
+    sessionid_localstorage_name: "session_id",
+    useremail_localstoragge_name: "email",
     state_length: 32, //Note: OIDC docs has no requirement on length
     //(though can't be infinite), as long as it's long enough to be unguessable
     nonce_length: 32,

@@ -57,7 +57,7 @@ export const AUTH_CONFIG: AuthConfig = {
     session_id_uri: DOMAIN_URI + ":8432/create_session", //Note: Currently using port 8432 for Python backend
     client_id: "YOUR_CLIENT_ID_HERE", //Safe to save client-side 
     client_secret: secrets["client_secret"], 
-    scope: "openid email",                             //depends on your application needs
+    scope: "openid email profile",                     //depends on your application needs
 
     idtoken_localstorage_name: "id_token",
     state_length: 32,                                  //Note: OIDC docs has no requirement on length 

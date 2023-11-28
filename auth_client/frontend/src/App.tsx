@@ -29,6 +29,7 @@ export default function App() {
         <Route
           path="/protected"
           element={
+            //Wrap the page which you want to be protected with <RequireAuth />
             <RequireAuth>
               <ProtectedPage />
             </RequireAuth>
