@@ -5,7 +5,7 @@
 ## Who is this service for?
 
 - MIT students creating web services for the MIT community
-- MIT clubs and organizations that want to add Touchstone authentication to their backend services
+- MIT clubs and organizations that want to add Touchstone authentication to their services
 
 ## Why not use other MIT auth services?
 
@@ -74,9 +74,9 @@ For step 4-6, you might need to specify the full URL, so for example you might b
 
 Once you restart your services with these changes, you should now be able to authenticate using Petrock.
 
-## What information can I query?
+## What information do I get about a user?
 
-Given a user's access token (see [this guide](https://developer.okta.com/blog/2019/10/21/illustrated-guide-to-oauth-and-oidc) if you're unsure what that is), you can query Petrock's user info endpoint at `https://petrock.mit.edu/oidc/userinfo`. The access token will need to be provided in the HTTP Authorization header in te Bearer scheme ([see](https://swagger.io/docs/specification/authentication/bearer-authentication/)).
+Given a user's access token (see [this guide](https://developer.okta.com/blog/2019/10/21/illustrated-guide-to-oauth-and-oidc) if you're unsure what that is), you can query Petrock's user info endpoint at `https://petrock.mit.edu/oidc/userinfo`. The access token will need to be provided in the HTTP Authorization header using the Bearer scheme ([see](https://swagger.io/docs/specification/authentication/bearer-authentication/)).
 
 Assuming you set your OIDC scopes as described above (with `openid`, `email`, and `profile`), you will be able to get back a JSON with the following keys:
 
@@ -96,6 +96,23 @@ For example, it may look something like this:
    "affiliation":"student",
    "name":"Ben Bunsen Bitdiddle",
    "given_name":"Ben",
-   "family_name":"Bunsen Bitdiddle"
+   "family_name":"Bitdiddle"
 }
 ```
+
+## I'm creating a new web application, how can I start?
+
+Depending on your choice of language/web frameworks, there are a number of official and non-official [OIDC libraries](https://openid.net/developers/certified-openid-connect-implementations/) that you can use. Because OIDC is built on top of OAuth 2.0 protocol, for Next.js projects, you can even try to use the built-in [OAuth support](https://next-auth.js.org/configuration/providers/oauth) and add some custom handler functions to make it work with OpenID Connect.
+
+For Petrock, we provide a **web application template** (found at [`auth_client`](./auth_client/)) that implements support for OIDC protocol, and is comprised of two components:
+
+1. A React.js frontend (running Node 16)
+2. A Express.js backend
+
+An example website running this web template can be found at: <https://unofficial-oidc-client.xvm.mit.edu/>
+
+This web application template was designed with security and flexibility in mind (see the [Security Design](https://github.com/sipb/petrock/blob/main/auth_client/README.md#security-design) section). It is intended to be used by MIT students who wants to quickly spin up a web project that has built-in support for MIT Touchstone authentication via Petrock. It has minimal design choices baked-in as to allow students ease-of-use in adapting the template to their needs.
+
+The template README also provides guidance + information on important aspects of building a secure web application (such as session management, certificates, hosting) that will be important to *all* web projects that want to support OIDC authentication. 
+
+For example, a version of this template is used in the [SIPB DormDigest](https://dormdigest.mit.edu/login) project ([Source Code](https://github.com/sipb/dormdigest-frontend)).
