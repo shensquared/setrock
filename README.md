@@ -99,7 +99,7 @@ Assuming you set your OIDC scopes as described above (with `openid`, `email`, an
 
 - `sub` - Unique user ID (equivalent to `email`)
 - `email` - Student email
-- `affiliation` - MIT primary affiliation (ex. `student`) 
+- `affiliation` - MIT primary affiliation (ex. `student`,`faculty`,`staff`,`affiliate`) 
 - `name` - Full name
 - `given_name` - First name
 - `family_name` - Surname or family name
