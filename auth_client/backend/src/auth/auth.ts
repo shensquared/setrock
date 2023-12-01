@@ -17,8 +17,13 @@ async function handleLogin(req: Request, res: Response) {
         success: true,
         error_msg: "",
         id_token: "",
+        session_id: "",
+        sub: "",
         email: "",
-        session_id: ""
+        affiliation: "",
+        name: "",
+        given_name: "",
+        family_name: "",
     };
     /**
      * Helper function: Instruct the client browser to clear the nonce cookie
@@ -76,6 +81,7 @@ async function handleLogin(req: Request, res: Response) {
             }
         );
     } catch (error) {
+        console.log(error);
         respondWithError("Input Error: Invalid user code was provided");
         return;
     }
@@ -157,10 +163,18 @@ async function handleLogin(req: Request, res: Response) {
                 const sessionIdResults = await getSessionId(profileResults.email);
 
                 if(sessionIdResults.success){
+                    //Both operations succeeded. 
                     userResponse.success = true;
                     userResponse.id_token = oidcJSON.id_token;
-                    userResponse.email = profileResults.email;
                     userResponse.session_id = sessionIdResults.session_id;
+
+                    //Populate profile fields
+                    userResponse.sub = profileResults.sub;
+                    userResponse.email = profileResults.email; 
+                    userResponse.affiliation = profileResults.affiliation; 
+                    userResponse.name = profileResults.name;
+                    userResponse.given_name = profileResults.given_name;
+                    userResponse.family_name = profileResults.family_name;
                 } else {
                     userResponse.success = false;
                     userResponse.error_msg = sessionIdResults.error_msg;
@@ -184,7 +198,8 @@ async function handleLogin(req: Request, res: Response) {
  *
  * For our basic example case, we will just or the user's email (defined in our authConfig.ts' scope)
  *
- * Returns: user's email (string), which is empty string if it fails to resolve
+ * Returns: user's profile information, which includes (email, mit affiliation, full name, given 
+ *          name, and family name)
  * */
 async function getUserInfo(access_token: string, id_token: object): Promise<userInfoResponse> {
     const userInfoResults: userInfoResponse = {

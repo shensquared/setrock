@@ -12,13 +12,25 @@ import "./auth.css";
  * Expected response for server to return to user's browser after querying /login endpoint
  */
 interface loginResponse {
-    success: boolean; //Whether or not the login succeeded
-    error_msg: string; //If failed, provide error message. Else, empty string.
+    success: boolean,   //Whether or not we were able to get user's info
+    error_msg: string,  //If failed, provide error message. Else, empty string.
 
-    //If success, these values should be populated. Else, empty string.
-    id_token: string;
-    email: string;
-    session_id: string;
+    //All the values below will be populated if success,
+    //otherwise they will be empty strings.
+
+    //These are in accordance with: https://github.com/sipb/petrock#what-information-can-i-query
+    sub: string,
+    email: string,
+    affiliation: string,
+    name: string,
+    given_name: string,
+    family_name: string,
+
+    //For session management
+    session_id: string
+
+    //For identify management (useful for OpenPubKey extension)
+    id_token: string
 }
 
 /**
@@ -108,6 +120,13 @@ function OidcResponseHandler() {
                 localStorage.setItem(AUTH_CONFIG.idtoken_localstorage_name, data.id_token);     //Save id_token to local storage
                 localStorage.setItem(AUTH_CONFIG.useremail_localstoragge_name, data.email);
                 localStorage.setItem(AUTH_CONFIG.sessionid_localstorage_name, data.session_id); //Save session_id to local storage
+
+                //NOTE: If you want to do more with the additional user profile
+                //      information (such as full name, family name, given name,
+                //                   MIT affiliation, you can do so here).
+                //      Otherwise, they are not saved to localstorage by default 
+                //      out of privacy concerns.
+
                 const pktoken = await opkService.generatePKToken(data.id_token);
                 console.log("PKTOKEN GENERATED", pktoken);
                 const ver = await opkService.verifyPKToken(pktoken);

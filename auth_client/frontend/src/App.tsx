@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import { OidcResponseHandler, redirectToLogin } from "./auth/auth";
 import { AuthProvider, RequireAuth, AuthStatus } from "./auth/authProvider";
+import "./App.css";
 
 /****************************************************************************************/
 import ChatRoom from "./chatroom/chatroom";
@@ -15,7 +16,7 @@ import ChatRoom from "./chatroom/chatroom";
 export default function App() {
   return (
     <AuthProvider>
-      <h1>MIT OIDC Login Example</h1>
+      <h1>Petrock OIDC Client Example</h1>
       <p>
         This example demonstrates a simple login flow with three pages: a public
         page, a protected page, and a login page. In order to see the protected
@@ -62,9 +63,9 @@ function Layout() {
 
 function LoginPage() {
   return (
-    <div>
+    <div className="Login">
       <p>You must log in to view the Protected page</p>
-      <button onClick={redirectToLogin}>Login</button>
+      <button onClick={redirectToLogin}>Sign in</button>
     </div>
   );
 }
@@ -86,5 +87,5 @@ function ProtectedPage() {
 }
 
 function Credit() {
-  return <p><b>Note:</b> This page is adapted from the "auth" example in React-Router Github <a href="https://github.com/remix-run/react-router/tree/dev/examples/auth">repo</a>.</p>
+  return <p><b>Note:</b> This page is running the OIDC client framework from the SIPB Petrock <a href="https://github.com/sipb/petrock/tree/main/auth_client#readme">repo</a>.</p>
 }

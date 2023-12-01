@@ -28,8 +28,15 @@ interface loginResponse {
 
     //If success, these values should be populated. Else, empty string.
     id_token: string, 
+    session_id: string,
+
+    //User profile information
+    sub: string,
     email: string,
-    session_id: string
+    affiliation: string,
+    name: string,
+    given_name: string,
+    family_name: string,
 }
 
 /**
