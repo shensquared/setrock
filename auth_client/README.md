@@ -1,6 +1,6 @@
 # mit-oidc-client
 
-Unofficial client template for Petrock OpenID Connect (OIDC) service
+Web application template for Petrock OpenID Connect (OIDC) service
 
 Live example can be found at: <https://unofficial-oidc-client.xvm.mit.edu>
 
@@ -18,22 +18,26 @@ A short presentation summarizing our project can be found [here](https://docs.go
   - [Related Works](#related-works)
   - [Security Design](#security-design)
   - [Developer Information](#developer-information)
-  - [Requirements](#requirements)
-    - [Setup](#setup)
+    - [Requirements](#requirements)
+    - [System Overview](#system-overview)
+  - [Setup](#setup)
     - [Running Code](#running-code)
     - [First step: OIDC registration + edit auth configs](#first-step-oidc-registration--edit-auth-configs)
-  - [Second Step: Sessions](#second-step-sessions)
-    - [Third step: Nginx](#third-step-nginx)
+    - [Second Step: Decide on session management](#second-step-decide-on-session-management)
+      - [What are Session IDs?](#what-are-session-ids)
+      - [Your responsibility](#your-responsibility)
+    - [Third step: Starting a web server](#third-step-starting-a-web-server)
     - [Fourth step: Certificates](#fourth-step-certificates)
-    - [Note about Hosting Options:](#note-about-hosting-options)
+    - [How do I get information about a user?](#how-do-i-get-information-about-a-user)
+    - [Choices for Server Hosting](#choices-for-server-hosting)
   - [Optional Reading: How our code works](#optional-reading-how-our-code-works)
     - [System Diagram](#system-diagram)
     - [Frontend](#frontend)
     - [Backend](#backend)
   - [Future Works](#future-works)
-    - [Extension: OpenPubKey](#extension-openpubkey)
+  - [Extension: OpenPubKey](#extension-openpubkey)
     - [Example Application: Authenticated Chatroom](#example-application-authenticated-chatroom)
-      - [Other possible OpenPubKey usage](#other-possible-openpubkey-usage)
+    - [Other possible OpenPubKey usage](#other-possible-openpubkey-usage)
   - [Questions/ Feature Requests?](#questions-feature-requests)
 
 
@@ -67,11 +71,11 @@ OIDC divides the authentication process to multiple steps, at which step you (or
 
 The idea is that at each step, there will be certain *keys* or *tokens* that identifies who you are + what the web service is doing. 
 
-When you first successfully log in MIT Touchstone, the browser gets back an **authorization code**. The **authorization code** just says "a user logged in to our page". 
+When you first successfully log in MIT Touchstone, the browser gets back an **authorization code**. The **authorization code** just says "a specific user logged in to our page". 
 
-The **authorization code** can then be exchanged for an **access token**, which grants it the ability to access information about you. To do this, it requires the web service to send a **client secret**, which identifies the browser/web service to the OIDC server (so OIDC can verify that it's a web service it knows about).
+The **authorization code** can then be exchanged for an **access token**, which grants it the ability to access information about you. To do this, it requires the web service to send a **client secret**, which uniquely identifies the browser/web service to the OIDC server (so OIDC can verify that it's a registered web service).
 
-Lastly, the **access token** is used to fetch identifying information (like your email and name) at the OIDC userinfo endpoint, after which point the web service can be sure of your identity, and the login process completes.
+The **access token** is then used to fetch identifying information (like your email and name) at the OIDC `/oidc/userinfo` endpoint, after which point the web service is relayed information about your identity, and the login process completes.
 
 ## Related Works
 
@@ -101,7 +105,7 @@ To ensure the security of our overall client framework, we made the following de
 
 ## Developer Information
 
-## Requirements
+### Requirements
 
 For this OIDC client framework, we assume you have access to the following:
 
@@ -110,7 +114,19 @@ For this OIDC client framework, we assume you have access to the following:
 - Your own methodology for implementing sessions (and issuing session IDs)
   - See the [Sessions](#second-step-sessions) for a more in-depth explanation
 
-### Setup
+### System Overview
+
+In the framework, we have two primary services:
+
+- React.js Frontend - what gets run in the browser
+  - **Purpose:** Display login page, redirects user to Petrock OIDC service for authentication, and talks to the backend (using the info it gets back from Petrock) to identify the user
+- Express.js Backend - what gets run on your server
+  - **Purpose:** Handle requests from the frontend, uses the information it gets to talk to OIDC servers, eventually getting user profile information and sends it back to the frontend
+  - **Runs on:** port 4000 by default
+
+You might be wondering why we need to separate between a frontend and a backend, instead of running everything in the browser. The reason is that for OpenID Connect `code flow` (which is what Petrock implements), you need to store a **client secret** that is unique to every web application registered with Petrock. Because of this, we need to have a separate backend running on our own server (trusted environment) instead of having the entire code in the user's browser (untrusted environment).
+
+## Setup
 
 Install:
 
@@ -134,30 +150,64 @@ To register, you will need to follow the instructions on the Petrock Github repo
 
 When it asks for a list of redirect URIs, you should provide: `https://YOUR_DOMAIN_NAME/oidc-response`. For example, if the domain you own is `dormdigest.mit.edu`, then you would input `https://dormdigest.mit.edu/oidc-response`.
 
-Within a few days, you should get an email back with your `client_id` and `client_secret`. 
+Within a few days, you should get an email back from the Petrock team with your `client_id` and `client_secret`. With this information, you should edit the following configuration files:
 
-With this information, you should now edit the configuration files, of which there's three:
+* Inside [`frontend/src/auth/authConfig.ts`](./frontend/src/auth/authConfig.ts), update:
+  - `DOMAIN_URI`: Domain name of your application (no trailing slash)
+  - `client_id`: Client ID given to you from Petrock
+* Inside [`backend/src/auth/authConfig.ts`](./backend/src/auth/authConfig.ts), update:
+  * `DOMAIN_URI`: Domain name of your application (no trailing slash)
+  - `client_id`: Client ID given to you from Petrock
+* Inside [`cert/secrets.json`](./cert/secrets.json), update:
+  * `client_secret`: Client secret given to you from Petrock
+  * **Note:** This secret must never be publicly exposed! Make sure you don't commit updates to `secrets.json` to your Github repository.
 
-* In `frontend/src/auth/authConfig.ts` and `backend/src/auth/authConfig.ts`, edit the following field:
+And that's it for this step! 
 
-- `DOMAIN_URI`: Domain name of your application (no trailing slash)
-- `client_id`: Client ID given to you from OIDC
+### Second Step: Decide on session management
 
-* In addition, open up `cert/secrets.json`, and paste in your `client_secret`.
+#### What are Session IDs?
 
-And that's it! The OIDC config edits were designed to be short and simple.
+Whenever a user successfully logged into your application, ideally you need some artifact or value that uniquely identifies that user and can be use to verify (in future web activities) that they actually logged in at some point via Petrock OIDC service. 
 
-## Second Step: Sessions
+For most modern websites + applications, they (e.g, the backend) will generate a `session_id`, which is a value that uniquely identifies a specific user's active session on a particular device, and returns it to the frontend/ the browser, where it is stored.
 
-TODO
+The session ID and is often used to authenticate all permission-sensitive actions a user performs on the website (normally included inside GET or POST requests to backend API endpoints). For more information about web sessions, see [here](https://www.baeldung.com/cs/web-sessions).
 
-### Third step: Nginx
+Because session management is application-specific, and their implementation can widely differ depending on your needs (ex. using a SQL database on the backend or storing all information in a signed cookie, choice of cookie library, etc.). 
 
-TODO
+#### Your responsibility
+
+Thus for the OIDC client framework, we leave the session ID management to you. By default, in the backend, every time a user is successfully logged in, we return a unique session ID via `getSessionId()` (found inside [`backend/src/auth/authSession.ts`](./backend/src/auth/authSession.ts)) to the frontend. This is inadequate for security since the session ID isn't saved anywhere (in the future the backend has no way of determining a given session ID string is actually valid). 
+
+Some ideas for how to proceed:
+
+- If your application doesn't display any sensitive / personal data (ex. general wiki page), then you can leave it as-is
+  - **Note:** This is effectively the same as *not* having authentication on your website
+- Implement a SQL database on the backend
+  - Modify `getSessionId()` such that every time you store a generate a new sessionID, you store it in a SQL database (or some persistent table format). Later than, when you add API endpoints that require the session ID for authentication, you can check the string given by in the HTTP request and see if it's in the table. If so, proceed. Otherwise, deny the action
+- Implement a separate server that generate and verify session IDs
+  - Since not everyone wants to use an Express.js server as their backend, you can alternatively implement another server where your important API endpoints are served + is capable of generating and validating session IDs. Inside [`backend/src/auth/authSession.ts`](./backend/src/auth/authSession.ts), we provide an alternative version of `getSessionId()` that makes an HTTPS request to the session ID server (URL as defined by `session_id_uri` inside [`backend/src/auth/authConfig.ts`](./backend/src/auth/authConfig.ts)).
+
+Whenever you want to use the return session ID in the frontend, you can call the `getUserAuthInfo()` function (located inside [`frontend/src/api/localdata.tsx`](./frontend/src/api/localdata.js)). It returns an object with the user email and session ID by default.
+
+### Third step: Starting a web server 
+
+With your web application, you will need a way of serving your static frontend files and also forward packets to your Express.js backend server. For this, we recommend using [Nginx as a web server](https://docs.nginx.com/nginx/admin-guide/web-server/web-server/). If you have other methods of starting a web server, feel free to use them as well.
+
+The idea is that you can point Nginx to serve your frontend build files (ex. index.html) at the web root path `/`, and also forward all requests to URL paths starting with `/api/` to the backend Express.js server (which runs on port 4000 by and only serves on `localhost` by default). In addition, Nginx can also be used to enforce HTTPS for applications, which is useful for the next step, [certificates](#fourth-step-certificates).
+
+
+To see how we configured our example website, see the following:
+
+- `nginx.conf` - See [here](nginx.conf) 
+  - **Purpose:** This file overrides the default Nginx config normally at `/etc/nginx/nginx.conf`. The only change it has is to specify `user` to `oidc` (e.g. the user on our server whose home directory contains both our frontend and backend code).
+- `oidc_nginx.conf` - See [here](oidc_nginx.conf)
+  - **Purpose:** This file was added to `/etc/nginx/sites-available` and then symlinked to in `/etc/nginx/sites-enabled`. It specifies the frontend file serving and backend request forwarding as described above.
 
 ### Fourth step: Certificates
 
-To secure the frontend and backend, you will need to use SSL certificates. For production, you should acquired certs from a trusted CA like Let's Encrypt.
+To secure the frontend and backend, you will need to use SSL certificates. Notably, OIDC is **not secure** if your application only uses HTTP. For production, you should acquired certs from a trusted CA like Let's Encrypt.
 
 For development work ONLY, you can generate self-signed certificates. See the following [guide](https://www.makeuseof.com/create-react-app-ssl-https/) to use `mkcert` utility. The certificates should be saved to the [/cert](/cert/) folder, with SSL secret key file named `key.pem` and public certificate file named `cert.pem`.
 
@@ -165,7 +215,64 @@ We recommend using Let's Encrypt or other reputable certificate authority when d
 
 On our live example, we used Let's Encrypt Certbot tool configured for Nginx for the acquiring and the auto-renewal of TLS certificates.
 
-### Note about Hosting Options:
+**Note:** If you are using Lets Encrypt or some other SSL certificate service where these files are not being stored inside `/cert/key.pem` and `/cert/cert.pem`, you will need to modify the `.env` SSL_CRT_FILE and SSL_KEY_FILE variables inside the frontend ([`frontend/.env`](./frontend/.env)) and the backend ([`backend/.env`](./backend/.env)) files.
+
+### How do I get information about a user?
+
+Once a user successfully logs in, the frontend will receive a successful response from the backend server inside the `OidcResponseHandler()` function (located at [`frontend/src/auth/auth.tsx`](./frontend/src/auth/auth.tsx)). 
+
+You can see the logic in this code snippet:
+
+```ts
+if (data.success) {
+    //Login was successful! Expect id_token
+    setLoginMsg("Login successful!");
+    localStorage.setItem(AUTH_CONFIG.idtoken_localstorage_name, data.id_token);     //Save id_token to local storage
+    localStorage.setItem(AUTH_CONFIG.useremail_localstoragge_name, data.email);
+    localStorage.setItem(AUTH_CONFIG.sessionid_localstorage_name, data.session_id); //Save session_id to local storage
+
+    //NOTE: If you want to do more with the additional user profile
+    //      information (such as full name, family name, given name,
+    //                   MIT affiliation, you can do so here).
+    //      Otherwise, they are not saved to localstorage by default 
+    //      out of privacy concerns.
+```
+
+By default, we save the user's email and session ID, which we establish as the minimum amount of info needed to identify a user. However, by default, the login response will have all of the following fields (defined inside in the same field), which if `success` is True, will be populated accordingly.
+
+```ts
+/**
+ * Expected response for server to return to user's browser after querying /login endpoint
+ */
+interface loginResponse {
+    success: boolean,   //Whether or not we were able to get user's info
+    error_msg: string,  //If failed, provide error message. Else, empty string.
+
+    //All the values below will be populated if success,
+    //otherwise they will be empty strings.
+
+    //These are in accordance with: https://github.com/sipb/petrock#what-information-can-i-query
+    sub: string,
+    email: string,
+    affiliation: string,
+    name: string,
+    given_name: string,
+    family_name: string,
+
+    //For session management
+    session_id: string
+
+    //For identify management (useful for OpenPubKey extension)
+    id_token: string
+}
+```
+
+Thus, if you want to do additional actions or save these profile information fields for later usage, you can modify the `OidcResponseHandler()` under the comment lines we provided. You could, for example, also save the `affiliation` and `name` field also in LocalStorage, or send them along to some other API endpoints for profile creation on your website.
+
+For more information about what the fields represent, see the Petrock docs: <https://github.com/sipb/petrock#what-information-can-i-query>
+
+
+### Choices for Server Hosting 
 
 Our client implementation does not require a specific hosting solution, and indeed you can deploy it on platforms like Heroku and Render.com, or MIT-specific hosting services like [XVM](XVM.mit.edu) offered by the [Student Information Processing Board (SIPB)](https://sipb.mit.edu/). Indeed, Heroku and Render.com offers fully managed TLS certificates to allow for HTTPS encryption.
 
@@ -286,7 +393,7 @@ While we were able to achieve many of the original goals set out for this projec
 2. **Add session management for users**
     * One quality-of-life feature we would like to add to our OIDC client is the ability to create and manage sessions for logged in users. Currently, our system provides a way of authenticating users to the application, but it doesn't offer a generic way of tracking/authenticating actions done by that user after a successful login, outside of the OpenPubKey OSM messages. We would like to add a secure session management scheme, likely using libraries like `express-session` or `cookie-session`.
 
-### Extension: OpenPubKey
+## Extension: OpenPubKey
 
 As an extension to providing authentication via Petrock OpenID Connect (OIDC) service, we supply the client with a [PK Token](https://eprint.iacr.org/2023/296) generated from the client's ID Token. The PK Token is a committment of a public/private key pair to the ID Token, which augments the method of authentication from Bearer's Authentication to Proof-of-Possession. This protocol is built upon and is fully compatible with the OpenID Connect service. We will show a possible use case of PK Tokens with an implementation of an authenticated chatroom.
 
@@ -298,7 +405,7 @@ In the authenticated chatroom, we demonstrate how PK Tokens can be use to verify
 
 Once logged in using an MIT crediential, the client may utilize methods from our `pktoken` module to generate a PK Token `opkService.getPKToken`, sign messages `opkService.generateOSM`, and verify messages `opkService.verifyOSM`. The user submits an OpenPubKey Signed Message (OSM) consisting of their message and a signture of their message using their PK Token. The authenticated chatroom is designed in a way to allow any users to verify any OSM at any time. All initial messages are unverified (grey check). To verify, click on the check and the verification may either accept (green check) or reject (red exclamation).
 
-#### Other possible OpenPubKey usage
+### Other possible OpenPubKey usage
 
 - **Committing bets**: Two friends make a bet on something, and they want to prove they made it with their commitment. Say later one person tries to say they never made this bet, but because they signed their message (which is stored on the server), we have irrefutable proof that they did make the bet.
 
