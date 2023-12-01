@@ -38,7 +38,18 @@ interface loginResponse {
 interface userInfoResponse {
     success: boolean,   //Whether or not we were able to get user's info
     error_msg: string,  //If failed, provide error message. Else, empty string.
-    email: string,      //If success, provide user email. Else, empty string.
+
+    //All the values below will be populated if success,
+    //otherwise they will be empty strings.
+
+    //These are in accordance with: https://github.com/sipb/petrock#what-information-can-i-query
+
+    sub: string,
+    email: string,
+    affiliation: string,
+    name: string,
+    given_name: string,
+    family_name: string,
 }
 
 /**

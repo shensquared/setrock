@@ -188,9 +188,14 @@ async function handleLogin(req: Request, res: Response) {
  * */
 async function getUserInfo(access_token: string, id_token: object): Promise<userInfoResponse> {
     const userInfoResults: userInfoResponse = {
-        success: true,
+        success: false,
         error_msg: "",
-        email: ""
+        sub: "",
+        email: "",
+        affiliation: "",
+        name: "",
+        given_name: "",
+        family_name: "",
     };
     let oidcResponse;
     try {
@@ -199,14 +204,17 @@ async function getUserInfo(access_token: string, id_token: object): Promise<user
         });
         //TODO: Verify that the `sub` in the response MUST match what is in the id_token
         //TODO: The Client MUST verify that the OP that responded was the intended OP through a TLS server certificate check, per RFC 6125 [RFC6125].
-
+        userInfoResults.success = true;
+        userInfoResults.sub = oidcResponse.data.sub;
         userInfoResults.email = oidcResponse.data.email; //Get email from JSON object
-        
+        userInfoResults.affiliation = oidcResponse.data.gender; //TODO: Remove gender quirk
+        userInfoResults.name = oidcResponse.data.name;
+        userInfoResults.given_name = oidcResponse.data.given_name;
+        userInfoResults.family_name = oidcResponse.data.family_name;
     } catch (error) {
         userInfoResults.success = false;
         userInfoResults.error_msg =
             "Request to OIDC user endpoint to retrieve profile info errored out.";
-        userInfoResults.email = "";
     }
 
     return userInfoResults;

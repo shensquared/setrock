@@ -2,6 +2,7 @@ import axios from "axios";
 import { AUTH_CONFIG } from "./authConfig";
 
 const fs = require('fs');
+const crypto = require('crypto');
 
 const apiSecretsData = fs.readFileSync('../cert/api_secrets.json'); //We choose to read in the API token
                                                          //from a JSON file stored in /cert folder
@@ -34,28 +35,40 @@ interface getSessionIdResponse {
 }
 
 async function getSessionId(email: string): Promise<getSessionIdResponse> {
+
     const results: getSessionIdResponse = { //Initialize our return type
         success: true,
         error_msg: "",
         session_id: ""
     };
 
-    const requestJSON: sessionIdRequest = {
-        email_addr: email,
-        token: apiToken
-    };
-
-    let response;
-    try {
-        response = await axios.post<sessionIdResponse>(AUTH_CONFIG.session_id_uri, requestJSON);
-        results.session_id = response.data.session_id; //Get session ID from JSON object
-    } catch (error) {
-        results.success = false;
-        results.error_msg = "Failed to get a new Session ID for this user";
-        results.session_id = "";
-    }
-
-    return results;
+    results.session_id = crypto.randomUUID();
+    return Promise.resolve(results);
 }
+
+// async function getSessionId(email: string): Promise<getSessionIdResponse> {
+//     const results: getSessionIdResponse = { //Initialize our return type
+//         success: true,
+//         error_msg: "",
+//         session_id: ""
+//     };
+
+//     const requestJSON: sessionIdRequest = {
+//         email_addr: email,
+//         token: apiToken
+//     };
+
+//     let response;
+//     try {
+//         response = await axios.post<sessionIdResponse>(AUTH_CONFIG.session_id_uri, requestJSON);
+//         results.session_id = response.data.session_id; //Get session ID from JSON object
+//     } catch (error) {
+//         results.success = false;
+//         results.error_msg = "Failed to get a new Session ID for this user";
+//         results.session_id = "";
+//     }
+
+//     return results;
+// }
 
 export { getSessionId };
