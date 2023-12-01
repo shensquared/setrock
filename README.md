@@ -82,8 +82,7 @@ Assuming you set your OIDC scopes as described above (with `openid`, `email`, an
 
 - `sub` - Unique user ID (equivalent to `email`)
 - `email` - Student email
-- `gender` - MIT primary affiliation (ex. `student`) 
-  - **Note:** We decided to place this field under `gender` primarily because out of the OIDC [standard claims](https://openid.net/specs/openid-connect-basic-1_0.html#UserInfoRequest) there isn't one for affiliation. 
+- `affiliation` - MIT primary affiliation (ex. `student`) 
 - `name` - Full name
 - `given_name` - First name
 - `family_name` - Surname or family name
@@ -94,7 +93,7 @@ For example, it may look something like this:
 {
    "sub":"ben@mit.edu",
    "email":"ben@mit.edu",
-   "gender":"student",
+   "affiliation":"student",
    "name":"Ben Bunsen Bitdiddle",
    "given_name":"Ben",
    "family_name":"Bunsen Bitdiddle"
