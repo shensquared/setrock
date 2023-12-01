@@ -67,15 +67,13 @@ OpenID Connect is an authentication protocal that builds on top of OAuth2.0. OID
 
 A helpful illustrative guide can be found [here](https://developer.okta.com/blog/2019/10/21/illustrated-guide-to-oauth-and-oidc). 
 
-OIDC divides the authentication process to multiple steps, at which step you (or really the web service trying to authenticate on your behalf) will interact with a different OIDC API endpoint.
+OIDC divides the authentication process to multiple steps, at which step you (or really the web service trying to authenticate on your behalf) will interact with a different OIDC API endpoint. The idea is that at each step, there will be certain *keys* or *tokens* that identifies who you are + what the web service is doing: 
 
-The idea is that at each step, there will be certain *keys* or *tokens* that identifies who you are + what the web service is doing. 
+1. When you first successfully log in MIT Touchstone, the browser gets back an **authorization code**. The **authorization code** just says "a specific user logged in to our page". 
 
-When you first successfully log in MIT Touchstone, the browser gets back an **authorization code**. The **authorization code** just says "a specific user logged in to our page". 
+2. The **authorization code** can then be exchanged for an **access token**, which grants it the ability to access information about you. To do this, it requires the web service to send a **client secret**, which uniquely identifies the browser/web service to the OIDC server (so OIDC can verify that it's a registered web service).
 
-The **authorization code** can then be exchanged for an **access token**, which grants it the ability to access information about you. To do this, it requires the web service to send a **client secret**, which uniquely identifies the browser/web service to the OIDC server (so OIDC can verify that it's a registered web service).
-
-The **access token** is then used to fetch identifying information (like your email and name) at the OIDC `/oidc/userinfo` endpoint, after which point the web service is relayed information about your identity, and the login process completes.
+3. The **access token** is then used to fetch identifying information (like your email and name) at the OIDC `/oidc/userinfo` endpoint, after which point the web service is relayed information about your identity, and the login process completes.
 
 ## Related Works
 
