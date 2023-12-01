@@ -4,12 +4,6 @@ import { AUTH_CONFIG } from "./authConfig";
 const fs = require('fs');
 const crypto = require('crypto');
 
-const apiSecretsData = fs.readFileSync('../cert/api_secrets.json'); //We choose to read in the API token
-                                                         //from a JSON file stored in /cert folder
-                                                             
-const apiSecrets = JSON.parse(apiSecretsData); //Contain API token
-const apiToken = apiSecrets["backend_api_token"];
-
 /**
  * Defines expected JSON input to /create_session API endpoint
  */
@@ -55,7 +49,12 @@ async function getSessionId(email: string): Promise<getSessionIdResponse> {
 
 //     const requestJSON: sessionIdRequest = {
 //         email_addr: email,
-//         token: apiToken
+//         token: "YOUR_SHARED_SECRET_HERE" //Note: For security, the API endpoint to get a new session ID
+//                                          //should take in some kind of shared secret (could be keys or 
+//                                          //a known string secret) and validate it.
+                                         
+//                                          //Otherwise, anyone can just get a session to your application
+//                                          //and effectively be logged in.
 //     };
 
 //     let response;
