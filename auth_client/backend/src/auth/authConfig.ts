@@ -37,7 +37,7 @@ interface AuthConfig {
 } 
 
 const OIDC_AUTHORITY_URI = "https://petrock.mit.edu"; 
-const DOMAIN_URI = "https://unofficial-oidc-client.xvm.mit.edu/";
+const DOMAIN_URI = "https://unofficial-oidc-client.xvm.mit.edu";
 
 export const AUTH_CONFIG: AuthConfig = {
 
@@ -54,7 +54,7 @@ export const AUTH_CONFIG: AuthConfig = {
     //Client-specific configs 
     redirect_uri: DOMAIN_URI + "/oidc-response", 
     login_uri: DOMAIN_URI + "/api/login",
-    session_id_uri: DOMAIN_URI + ":8432/create_session", //Note: REPLACE WITH SERVER API THAT ISSUES SESSION_IDS
+    session_id_uri: DOMAIN_URI + "/REPLACE_WITH_YOUR_OWN", //Note: REPLACE WITH SERVER API THAT ISSUES SESSION_IDS
     client_id: "YOUR_CLIENT_ID_HERE", //Safe to save client-side 
     client_secret: secrets["client_secret"], 
     scope: "openid email profile",                     //depends on your application needs
