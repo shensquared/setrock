@@ -1,6 +1,6 @@
 # mit-oidc-client
 
-Unofficial client template for MIT OpenID Connect (OIDC) service
+Unofficial client template for Petrock OpenID Connect (OIDC) service
 
 Live example can be found at: <https://unofficial-oidc-client.xvm.mit.edu>
 
@@ -41,12 +41,12 @@ A short presentation summarizing our project can be found [here](https://docs.go
 
 We want to provide an easy-to-use template for MIT students looking to develop secure web services that supports MIT Touchstone authentication.
 
-While [supporting documentation](https://ist.mit.edu/oidc) exists to do user authentication using [MIT OpenID Connect](https://oidc.mit.edu/) service, we feel there is a knowledge gap and technical barrier that prevents its widespread adoption. In this project, we hope to provide a simple and secure client implementation that MIT student developers can adopt to quickly get authentication in their web services.
+While [supporting documentation](https://ist.mit.edu/oidc) exists to do user authentication using [Petrock OpenID Connect](https://oidc.mit.edu/) service, we feel there is a knowledge gap and technical barrier that prevents its widespread adoption. In this project, we hope to provide a simple and secure client implementation that MIT student developers can adopt to quickly get authentication in their web services.
 
 ## What is included? 
 
 - Basic template for a **secure web service** containing front-end (React.js) and API back-end (Express.js)
-- Features for **integration with Touchstone authentication** via MIT OpenID Connect (OIDC) service
+- Features for **integration with Touchstone authentication** via Petrock OpenID Connect (OIDC) service
   - Includes code for securely requesting, parsing, and validating OAuth tokens from MIT OIDC
   - Provides logic for how to use those tokens to request information about users
 - [**Support developer documentation**](#developer-information) for how to use our template and how OpenID Connect works
@@ -288,11 +288,11 @@ While we were able to achieve many of the original goals set out for this projec
 
 ### Extension: OpenPubKey
 
-As an extension to providing authentication via MIT OpenID Connect (OIDC) service, we supply the client with a [PK Token](https://eprint.iacr.org/2023/296) generated from the client's ID Token. The PK Token is a committment of a public/private key pair to the ID Token, which augments the method of authentication from Bearer's Authentication to Proof-of-Possession. This protocol is built upon and is fully compatible with the OpenID Connect service. We will show a possible use case of PK Tokens with an implementation of an authenticated chatroom.
+As an extension to providing authentication via Petrock OpenID Connect (OIDC) service, we supply the client with a [PK Token](https://eprint.iacr.org/2023/296) generated from the client's ID Token. The PK Token is a committment of a public/private key pair to the ID Token, which augments the method of authentication from Bearer's Authentication to Proof-of-Possession. This protocol is built upon and is fully compatible with the OpenID Connect service. We will show a possible use case of PK Tokens with an implementation of an authenticated chatroom.
 
 ### Example Application: Authenticated Chatroom
 
-**Note:** To access the chatroom, you must login with your MIT credentials through the MIT OpenID Connect service. 
+**Note:** To access the chatroom, you must login with your MIT credentials through the Petrock OpenID Connect service. 
 
 In the authenticated chatroom, we demonstrate how PK Tokens can be use to verify whether data is coming from a trusted user or not, which fundamentally is what authentication is about. In our case, these pieces of data takes the form of a text message and the trusted user is an identity holding an MIT crediential. 
 
