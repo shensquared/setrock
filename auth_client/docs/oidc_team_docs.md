@@ -18,15 +18,25 @@ To be able to directly SSH into the production server, first let a current maint
 
 Because of how the OpenID Connect system is set up, generally any testing you do that requires interactions from the OIDC server (that can't be simulated yourself) will require you to copy your backend and/or frontend **build** files to the remote server, and then see the results there.
 
+### Pushing build files
+
 To build, navigate to either `frontend/` or `backend/` and run `npm run build`.
 
 Quick command to copy the build from your local filesystem to the server:
 
-`scp -r /home/huydai/Documents/mit-oidc-client/frontend/build/* oidc@unofficial-oidc-client.xvm.mit.edu:~/mit-oidc-client/frontend/build`
+`scp -r /home/huydai/Documents/SIPB/petrock/auth_client/frontend/build/* oidc@unofficial-oidc-client.xvm.mit.edu:~/petrock/auth_client/frontend/build`
 
-`scp -r /home/huydai/Documents/mit-oidc-client/backend/build/* oidc@unofficial-oidc-client.xvm.mit.edu:~/mit-oidc-client/backend/build`
+`scp -r /home/huydai/Documents/SIPB/petrock/auth_client/backend/build/* oidc@unofficial-oidc-client.xvm.mit.edu:~/petrock/auth_client/backend/build`
+
+**Note:** Before doing this, make sure that you have the both `backend/src/auth/authConfig.ts` and `frontend/src/auth/authConfig.ts` with the `client_id` of the service. This is important since this information will go into the npm build, instead of being in a static file that can referred to separately like `cert/secrets.json`. However, when you replce the `client_id`, make sure you DON'T commit this change to the Github repo, because we want the default template to say "YOUR_CLIENT_ID_HERE".
+
+Also whenever you add a Node module you'll need to push the new `node_modules` folder as well, since the production code will refer to these modules directly. Example for backend:
+
+`scp -r /home/huydai/Documents/SIPB/petrock/auth_client/backend/node_modules/* oidc@unofficial-oidc-client.xvm.mit.edu:~/petrock/auth_client/backend/node_modules`
 
 Since the OpenSSH server is set to only use pubkey authentication, this command will not require you to input a password.
+
+### Running/restarting the services
 
 The frontend files are served statically with Nginx, so you don't have to run anything. For the backend server, when doing testing, you will need to run it with `node build/index.js` (assuming you are cd'ed in the `backend/` folder). Note that this server will only run while your terminal is alive, unless you add the background `&` sign to the end of the command. 
 
@@ -34,11 +44,8 @@ When you are confident in your implementation and wants to run the backend in pr
 
 If you get an error about connection refused or IP address in use, do `ps` to list running processes, and then `kill [process_num]` to kill a running process, or `kill -9 [process_num]` to force kill it.
 
-
 ## Final Deployment Tasks
 
--   Switch backend server to use Let's Encrypt certs instead of self-signed certs (these expire in 2 years)
-    -   Note: This is the cert that is used to talk between the Nginx proxy and the Express backend server, which happens all internally on the XVM. Thus it's acceptable to use self-signed certs for now.
 -   Remove extraneous console.log statements for OpenPubKey parts
 -   Turn on prevent implicit any Typescript check in backend + fix issues (if time permits)
 -   Fix camel case in AuthConfig (frontend and backend)
