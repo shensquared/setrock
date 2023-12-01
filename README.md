@@ -67,7 +67,7 @@ With this information, you should edit your configuration such that:
    1. Make sure it includes `openid`, `email`, and `profile` 
    2. Ex. `openid email profile`
 
-For step 4-6, you might need to specify the full URL, so for example you might be going from:
+For step 4-7, you might need to specify the full URL, so for example you might be going from:
 
  - `https://oidc.mit.edu/authorize` 
  - to `https://petrock.mit.edu/touchstone/oidc/authorization`
@@ -98,6 +98,7 @@ Given a user's access token (see [this guide](https://developer.okta.com/blog/20
 Assuming you set your OIDC scopes as described above (with `openid`, `email`, and `profile`), you will be able to get back a JSON with the following keys:
 
 - `sub` - Unique user ID (equivalent to `email`)
+  - **Note:** This behavior is different from `oidc.mit.edu`, which used to return a hash that is unique to each person.
 - `email` - Student email
 - `affiliation` - MIT primary affiliation (ex. `student`,`faculty`,`staff`,`affiliate`) 
 - `name` - Full name

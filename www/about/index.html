@@ -45,6 +45,8 @@
 
    <p>Most official MIT applications do use Shibboleth, but the <a href="https://wikis.mit.edu/confluence/display/TOUCHSTONE/Provisioning+Steps">set up guide</a> for Shibboleth can be cumbersome and confusing if you are not familiar with the protocol. Also, the simplest way to set it up requires using Apache or building a custom version of Nginx from source, which may not always be preferable.</p>
 
+   <p>As another note, Touchstone is <a href="https://en.wikipedia.org/wiki/Security_Assertion_Markup_Language">SAML</a> under the hood, so any SAML client also works (not just Shibboleth), but SAML is very enterprise-y and has a lot of options that are beyond our comprehension. If you are writing an application from scratch that does not already easily support SAML, it can take a lot of painful back and forth to get it right. You probably don't want to be thinking about <code>urn:oid:2.16.840.1.113730.3.1.241</code> when all you want to type is <code>name</code>.</p>
+
    <h2 id="why-oidc">So why OIDC?</h2>
 
    <p>Petrock models itself after <code>oidc.mit.edu</code>, which was an another MIT authentication service that uses the <a href="https://www.pingidentity.com/en/resources/identity-fundamentals/authentication-authorization-standards/openid-connect.html">OpenID Connect</a> protocol. OIDC is an open-source protocol that has widespread library support across many different programming languages. In addition, we believe it's easier to use and understand for student web developers. OIDC is also used in other authentication services like <a href="https://shimmer.csail.mit.edu/">Shimmer</a> (operated by CSAIL) that powers most of Course 6 websites and CSAIL services.</p>
