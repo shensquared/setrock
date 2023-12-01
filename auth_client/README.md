@@ -260,7 +260,7 @@ interface loginResponse {
     //For session management
     session_id: string
 
-    //For identify management (useful for OpenPubKey extension)
+    //For identity management (useful for OpenPubKey extension)
     id_token: string
 }
 ```
