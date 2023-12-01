@@ -67,7 +67,7 @@ With this information, you should edit your configuration such that:
    1. Make sure it includes `openid`, `email`, and `profile` 
    2. Ex. `openid email profile`
 
-For step 4-6, you might need to specify the full URL, so for example you might be going from:
+For step 4-7, you might need to specify the full URL, so for example you might be going from:
 
  - `https://oidc.mit.edu/authorize` 
  - to `https://petrock.mit.edu/touchstone/oidc/authorization`
