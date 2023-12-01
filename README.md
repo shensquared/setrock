@@ -76,11 +76,27 @@ Once you restart your services with these changes, you should now be able to aut
 
 ## What information can I query?
 
-Given a user's access token (see [this guide](https://developer.okta.com/blog/2019/10/21/illustrated-guide-to-oauth-and-oidc) if you're unsure what that is), you can query Petrock's user info endpoint at `https://petrock.mit.edu/oidc/userinfo`. The access token will need to be provided in the HTTP Authorization header using Bearer scheme ([see](https://swagger.io/docs/specification/authentication/bearer-authentication/)).
+Given a user's access token (see [this guide](https://developer.okta.com/blog/2019/10/21/illustrated-guide-to-oauth-and-oidc) if you're unsure what that is), you can query Petrock's user info endpoint at `https://petrock.mit.edu/oidc/userinfo`. The access token will need to be provided in the HTTP Authorization header in te Bearer scheme ([see](https://swagger.io/docs/specification/authentication/bearer-authentication/)).
 
 Assuming you set your OIDC scopes as described above (with `openid`, `email`, and `profile`), you will be able to get back a JSON with the following keys:
 
+- `sub` - Unique user ID (equivalent to `email`)
 - `email` - Student email
-- (??) `name` - Full name
-- (??) `gender` - MIT affiliation (ex. `student`) 
-- (??) IDK what else
+- `gender` - MIT primary affiliation (ex. `student`) 
+  - **Note:** We decided to place this field under `gender` primarily because out of the OIDC [standard claims](https://openid.net/specs/openid-connect-basic-1_0.html#UserInfoRequest) there isn't one for affiliation. 
+- `name` - Full name
+- `given_name` - First name
+- `family_name` - Surname or family name
+
+For example, it may look something like this:
+
+```json
+{
+   "sub":"ben@mit.edu",
+   "email":"ben@mit.edu",
+   "gender":"student",
+   "name":"Ben Bunsen Bitdiddle",
+   "given_name":"Ben",
+   "family_name":"Bunsen Bitdiddle"
+}
+```

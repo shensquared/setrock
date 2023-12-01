@@ -22,9 +22,10 @@ A short presentation summarizing our project can be found [here](https://docs.go
     - [Setup](#setup)
     - [Running Code](#running-code)
     - [First step: OIDC registration + edit auth configs](#first-step-oidc-registration--edit-auth-configs)
-    - [Certificates](#certificates)
-    - [Hosting](#hosting)
-  - [Sessions](#sessions)
+  - [Second Step: Sessions](#second-step-sessions)
+    - [Third step: Nginx](#third-step-nginx)
+    - [Fourth step: Certificates](#fourth-step-certificates)
+    - [Note about Hosting Options:](#note-about-hosting-options)
   - [Optional Reading: How our code works](#optional-reading-how-our-code-works)
     - [System Diagram](#system-diagram)
     - [Frontend](#frontend)
@@ -107,7 +108,7 @@ For this OIDC client framework, we assume you have access to the following:
 - A public domain/IP address you own
 - A server or VM instance which you will be hosting the code on
 - Your own methodology for implementing sessions (and issuing session IDs)
-  - See the [Sessions](#sessions) for a more in-depth explanation
+  - See the [Sessions](#second-step-sessions) for a more in-depth explanation
 
 ### Setup
 
@@ -133,16 +134,28 @@ To register, you will need to follow the instructions on the Petrock Github repo
 
 When it asks for a list of redirect URIs, you should provide: `https://YOUR_DOMAIN_NAME/oidc-response`. For example, if the domain you own is `dormdigest.mit.edu`, then you would input `https://dormdigest.mit.edu/oidc-response`.
 
-Within a few days, you should get an email back with your `client_id` and `client_secret`. Update these parameters in both `frontend/src/auth/authConfig.ts` and `backend/src/auth/authConfig.ts`.
+Within a few days, you should get an email back with your `client_id` and `client_secret`. 
 
-Once you done so, you will also need to **edit the `authConfig.ts` file in both the frontend and backend code**. This file is stored under the `auth` folder, and contains information used by the application to run your auth endpoints. Things you will need to edit:
+With this information, you should now edit the configuration files, of which there's three:
+
+* In `frontend/src/auth/authConfig.ts` and `backend/src/auth/authConfig.ts`, edit the following field:
 
 - `DOMAIN_URI`: Domain name of your application (no trailing slash)
 - `client_id`: Client ID given to you from OIDC
-- `scope` (optional): If you want to access other user information in addition to "email". **Note:** This will require further modification in the backend + frontend code if you want to query for other information about the user such as full name or kerberos. Please contact a member of our team if you want help implementing this modification.
 
+* In addition, open up `cert/secrets.json`, and paste in your `client_secret`.
 
-### Certificates
+And that's it! The OIDC config edits were designed to be short and simple.
+
+## Second Step: Sessions
+
+TODO
+
+### Third step: Nginx
+
+TODO
+
+### Fourth step: Certificates
 
 To secure the frontend and backend, you will need to use SSL certificates. For production, you should acquired certs from a trusted CA like Let's Encrypt.
 
@@ -152,15 +165,12 @@ We recommend using Let's Encrypt or other reputable certificate authority when d
 
 On our live example, we used Let's Encrypt Certbot tool configured for Nginx for the acquiring and the auto-renewal of TLS certificates.
 
-### Hosting
+### Note about Hosting Options:
 
 Our client implementation does not require a specific hosting solution, and indeed you can deploy it on platforms like Heroku and Render.com, or MIT-specific hosting services like [XVM](XVM.mit.edu) offered by the [Student Information Processing Board (SIPB)](https://sipb.mit.edu/). Indeed, Heroku and Render.com offers fully managed TLS certificates to allow for HTTPS encryption.
 
 For our purposes, we hosted our example website on an Ubuntu 18.02 VM running on SIPB's XVM service. We use Nginx as our web server and reverse proxy with TLS enabled, and `pm2` as the process manager for the Express backend.
 
-## Sessions
-
-TODO
 
 ## Optional Reading: How our code works 
 
