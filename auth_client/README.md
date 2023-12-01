@@ -182,6 +182,7 @@ Some ideas for how to proceed:
 
 - If your application doesn't display any sensitive / personal data (ex. general wiki page), then you can leave it as-is
   - **Note:** This is effectively the same as *not* having authentication on your website
+  - When you're first starting out with your web project, it is also acceptable to leave the default behavior, and come back to it once you have API endpoints that you want to protect with session IDs.
 - Implement a SQL database on the backend
   - Modify `getSessionId()` such that every time you store a generate a new sessionID, you store it in a SQL database (or some persistent table format). Later than, when you add API endpoints that require the session ID for authentication, you can check the string given by in the HTTP request and see if it's in the table. If so, proceed. Otherwise, deny the action
 - Implement a separate server that generate and verify session IDs
