@@ -8,12 +8,12 @@
    <meta http-equiv="X-UA-Compatible" content="ie=edge">
    <title>About Petrock</title>
    <link rel="icon" type="image/x-icon" href="favicon.v1.ico">
-   <link rel="stylesheet" href="css/v1.css">
+   <link rel="stylesheet" href="/css/v2.css">
 </head>
 <body>
    <a id="top"></a>
 
-   <a href="https://petrock.mit.edu/">(Back to home page)</a>
+   <a href="/">(Back to home page)</a>
 
    <p><b>Jump to:</b>
    <ul>
@@ -24,6 +24,8 @@
       <li><a href="#transfer-from-oidc-pilot"><b>I'm currently using <code>oidc.mit.edu</code>, how do I switch to Petrock?</b></a><ul>
          <li><a href="#example-transfer">Example</a></li>
          <li><a href="#editing-configuration">Editing your configuration</a></li></ul></li>
+      <li><a href="#where-to-start"><b>I'm creating a new web application, how can I start?</b></a></li>
+      <li><a href="#user-information"><b>What information do I get about a user?</b></a></li>
    </ul></p>
 
    <h1 id="about-petrock">About Petrock</h1>
@@ -92,16 +94,69 @@
       <li>Token Issuer: Replace <code>https://oidc.mit.edu/</code> with <code>https://petrock.mit.edu</code> (no trailing slash)</li>
       <li>Auth endpoint: Replace <code>/authorize</code> with <code>/touchstone/oidc/authorization</code></li>
       <li>Token endpoint: Replace <code>/token</code> wit <code>/oidc/token</code></li>
+      <li>User Info endpoint: Replace <code>/userinfo</code> with <code>/oidc/userinfo</code></li>
       <li>Public key endpoint: Replace <code>/jwk</code> with <code>/oidc/jwks</code></li>
+      <li>OIDC scopes <ul>
+         <li>Make sure it includes <code>openid</code>, <code>email</code>, and <code>profile</code></li>
+         <li>Ex. <code>openid email profile</code></li>
+      </ul></li>
    </ol></p>
 
-   <p>For step 4-6, you might need to specify the full URL, so for example you might be going from:
+   <p>For step 4-7, you might need to specify the full URL, so for example you might be going from:
    <ul>
       <li><code>https://oidc.mit.edu/authorize</code> </li>
       <li>to <code>https://petrock.mit.edu/touchstone/oidc/authorization</code></li>
    </ul></p>
 
    <p>Once you restart your services with these changes, you should now be able to authenticate using Petrock.</p>
+
+   <h1 id="where-to-start">I'm creating a new web application, how can I start?</h1>
+
+   <p>Depending on your choice of language/web frameworks, there are a number of official and non-official <a href="https://openid.net/developers/certified-openid-connect-implementations/">OIDC libraries</a> that you can use. Because OIDC is built on top of OAuth 2.0 protocol, for Next.js projects, you can even try to use the built-in <a href="https://next-auth.js.org/configuration/providers/oauth">OAuth support</a> and add some custom handler functions to make it work with OpenID Connect.</p>
+
+   <p>For Petrock, we provide a <b>web application template</b> (found at <a href="https://github.com/sipb/petrock/tree/main/auth_client"><code>auth_client</code></a>) that implements support for OIDC protocol, and is comprised of two components:
+   <ol>
+      <li>A React.js frontend (running Node 16)</li>
+      <li>A Express.js backend</li>
+   </ol></p>
+
+   <p>An example website running this web template can be found at: <a href="https://unofficial-oidc-client.xvm.mit.edu/">https://unofficial-oidc-client.xvm.mit.edu/</a></p>
+
+   <p>This web application template was designed with security and flexibility in mind (see the <a href="https://github.com/sipb/petrock/blob/main/auth_client/README.md#security-design">Security Design</a> section). It is intended to be used by MIT students who wants to quickly spin up a web project that has built-in support for MIT Touchstone authentication via Petrock. It has minimal design choices baked-in as to allow students ease-of-use in adapting the template to their needs.</p>
+
+   <p>The template README also provides guidance + information on important aspects of building a secure web application (such as session management, certificates, hosting) that will be important to <i>all</i> web projects that want to support OIDC authentication. </p>
+
+   <p>For example, a version of this template is used in the <a href="https://dormdigest.mit.edu/">SIPB DormDigest</a> project (<a href="https://github.com/sipb/dormdigest-frontend">Source Code</a>).</p>
+
+   <h1 id="user-information">What information do I get about a user?</h1>
+
+   <p>Given a user's access token (see <a href="https://developer.okta.com/blog/2019/10/21/illustrated-guide-to-oauth-and-oidc">this guide</a> if you're unsure what that is), you can query Petrock's user info endpoint at <code>https://petrock.mit.edu/oidc/userinfo</code>. The access token will need to be provided in the HTTP Authorization header using the Bearer scheme (<a href="https://swagger.io/docs/specification/authentication/bearer-authentication/">see</a>).</p>
+
+   <p>Assuming you set your OIDC scopes as described above (with <code>openid</code>, <code>email</code>, and <code>profile</code>), you will be able to get back a JSON with the following keys:
+   <ul>
+      <li><code>sub</code> - Unique user ID (equivalent to <code>email</code>)<ul>
+      <li><strong>Note:</strong> This behavior is different from <code>oidc.mit.edu</code>, which used to return a hash that is unique to each person.</li>
+      </ul>
+      </li>
+      <li><code>email</code> - Student email</li>
+      <li><code>affiliation</code> - MIT primary affiliation (ex. <code>student</code>,<code>faculty</code>,<code>staff</code>,<code>affiliate</code>) </li>
+      <li><code>name</code> - Full name</li>
+      <li><code>given_name</code> - First name</li>
+      <li><code>family_name</code> - Surname or family name</li>
+   </ul></p>
+
+   <p>For example, it may look something like this:</p>
+   <pre>
+      {
+         "sub": "ben@mit.edu",
+         "email": "ben@mit.edu",
+         "affiliation": "student",
+         "name": "Ben Bunsen Bitdiddle",
+         "given_name": "Ben",
+         "family_name": "Bitdiddle"
+      }
+   </pre>
+
 
    <a href="#top">(Jump back to top)</a>
    <!--<p><a href="https://accessibility.mit.edu/">Accessibility</a></p>-->
