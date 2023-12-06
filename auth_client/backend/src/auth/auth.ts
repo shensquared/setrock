@@ -222,7 +222,7 @@ async function getUserInfo(access_token: string, id_token: object): Promise<user
         userInfoResults.success = true;
         userInfoResults.sub = oidcResponse.data.sub;
         userInfoResults.email = oidcResponse.data.email; //Get email from JSON object
-        userInfoResults.affiliation = oidcResponse.data.gender; //TODO: Remove gender quirk
+        userInfoResults.affiliation = oidcResponse.data.affiliation; 
         userInfoResults.name = oidcResponse.data.name;
         userInfoResults.given_name = oidcResponse.data.given_name;
         userInfoResults.family_name = oidcResponse.data.family_name;
