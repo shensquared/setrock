@@ -57,7 +57,7 @@
 
    <p>Depending on what library/custom code you're using to support the OpenID Connect protocol, the main changes would be with editing your configuration to use Petrock endpoints instead of the old OIDC Pilot endpoints.</p>
 
-   <p>First, you'll need to email us at <code>petrock@mit.edu</code>, and provide the following information:
+   <p>First, you'll need to provide the following information through <a href="https://forms.gle/VirozJ8tRZK2hBax9">our signup form</a>:
    <ul>
       <li><b>Name</b> of your web service</li>
       <li>The <b>purpose</b> of your web service</li>
@@ -66,6 +66,14 @@
          <li>These should be the server endpoint(s) that is able to receive the authentication <code>code</code> after a successful user login</li>
          <li>We allow for multiple in case you have multiple servers (e.g., a testing + production) running the same service</li>
       </ul></li>
+   </ul></p>
+
+   The link to the form is: <a href="https://forms.gle/VirozJ8tRZK2hBax9">https://forms.gle/VirozJ8tRZK2hBax9</a>
+   
+   <p>We'll then email you back with:
+   <ul>
+      <li>a <code>client_id</code> (safe to store in Github + publicly)</li>
+      <li>a <code>client_secret</code> (MUST BE KEPT SECRET)</li>
    </ul></p>
 
    <h2 id="example-transfer">Example</h2>
@@ -79,12 +87,6 @@
          <li><code>https://dormdigest.mit.edu/oidc-response</code></li>
          <li><code>https://dormdigest.xvm.mit.edu/oidc-response</code></li>
       </ul></li>
-   </ul></p>
-
-   <p>We'll then email you back with:
-   <ul>
-      <li>a <code>client_id</code> (safe to store in Github + publicly)</li>
-      <li>a <code>client_secret</code> (MUST BE KEPT SECRET)</li>
    </ul></p>
 
    <h2 id="editing-configuration">Editing your configuration</h2>
