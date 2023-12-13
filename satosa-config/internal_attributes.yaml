@@ -1,0 +1,35 @@
+# TODO: actually edit
+
+attributes:
+  displayname:
+    openid: [name]
+    orcid: [displayname]
+    saml: [displayName]
+  id:
+    openid: [sub]
+    saml: [eduPersonPrincipalName]
+  mail:
+    orcid: [mail]
+    openid: [email]
+    # MIT just uses mail
+    saml: [mail]
+  affiliation:
+    openid: [gender]
+    saml: [eduPersonAffiliation]
+  firstName:
+    openid: [given_name]
+    # so this concatenates instead of acting as a fallback :(
+    saml: 
+      # - mitDisplayFirstMiddle
+      - givenName
+  surname:
+    orcid: [surname]
+    openid: [family_name]
+    saml: 
+      # - mitDisplayLastSuffix
+      - sn
+
+#user_id_from_attrs: [edupersontargetedid]
+#user_id_to_attr: edupersontargetedid
+user_id_from_attrs: [id]
+user_id_to_attr: id
