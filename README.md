@@ -7,6 +7,10 @@
 - MIT students creating web services for the MIT community
 - MIT clubs and organizations that want to add Touchstone authentication to their services
 
+## How does Petrock work?
+
+Petrock is an instance of [SATOSA](https://github.com/IdentityPython/SATOSA) by [IdentityPython](https://idpy.org), a proxy that translates from SAML to OpenID Connect, among other protocols.
+
 ## Why not use other MIT auth services?
 
 Currently if you are a student developer creating individual web applications at MIT, the main way of getting user authentication for your website is through [Shibboleth](http://kb.mit.edu/confluence/display/istcontrib/Touchstone+FAQ). 
