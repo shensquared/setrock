@@ -292,7 +292,7 @@ title: OIDC Client Design
 ---
 sequenceDiagram
     autonumber
-    box orange unofficial-oidc-client.xvm.mit.edu
+    box lightyellow unofficial-oidc-client.xvm.mit.edu
     participant Frontend as React.js Frontend
     participant Backend as Express.js Backend
     end
@@ -300,12 +300,12 @@ sequenceDiagram
     participant OIDC as OIDC Server
     end
     
-    Frontend ->> OIDC:  redirects to /authorize
+    Frontend ->> OIDC:  redirects to /oidc/authorize
     OIDC -->> Frontend: receives auth code
     Frontend ->> Backend: sends auth code to /login
-    Backend ->> OIDC: sends auth code to /token with client_secret
+    Backend ->> OIDC: sends auth code to /oidc/token with client_secret
     OIDC -->> Backend: receives JWT with id_token and access token
-    Backend ->> OIDC: queries about user at /userinfo with access token
+    Backend ->> OIDC: queries about user at /oidc/userinfo with access token
     OIDC -->> Backend: receives user information
     Backend -->> Frontend: receives id_token and user email
 ```
