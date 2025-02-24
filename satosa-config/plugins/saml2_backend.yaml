@@ -3,11 +3,12 @@ name: touchstone
 config:
   #idp_blacklist_file: /path/to/blacklist.json
 
-  disco_srv: https://wayf.mit.edu/DS
+  # Disabled for Okta, this used to allow logging in with @alum.mit.edu addresses and others
+  # disco_srv: https://wayf.mit.edu/DS
 
   entityid_endpoint: true # idk what this is and it's not documented
   mirror_force_authn: false # there is no SAML frontend so I don't think this matters
-  memorize_idp: false # wayf should do that for us
+  # memorize_idp: false # wayf should do that for us
   use_memorized_idp_when_force_authn: false # same
   send_requester_id: false # this is the default value and not documented either
   enable_metadata_reload: false # https://github.com/IdentityPython/SATOSA/blob/a6262597d4d982063acdebd542af79ccd4f829fa/CHANGELOG.md?plain=1#L115
@@ -30,13 +31,8 @@ config:
         email_address: 'mailto:petrock@mit.edu'
 
     metadata:
-      #local:
-      #  - '/home/oidc/touchstone.xml'
       remote:
-        # - url: 'https://touchstone.mit.edu/metadata/idp.mit.edu-metadata.xml' 
-        # - url: 'https://touchstone.mit.edu/metadata/idp-alum.mit.edu-metadata.xml'
-        - url: 'https://touchstone.mit.edu/metadata/MIT-metadata.xml'
-          cert: /home/oidc/keys/saml/mit-md-cert.pem
+        - url: 'https://okta.mit.edu/app/exkfuqmlzchKIVXFZ697/sso/saml/metadata'
 
     entityid: <base_url>/<name>/proxy_saml2_backend.xml
     accepted_time_diff: 60 # TODO: aint this too much?
