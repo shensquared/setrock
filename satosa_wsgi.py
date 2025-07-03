@@ -6,14 +6,11 @@ import sys
 sys.path.insert(0, '/home/setrock/satosa-env/lib/python3.11/site-packages')
 
 from satosa.satosa_config import SATOSAConfig
-from satosa.base import SATOSABase
+from satosa.proxy_server import make_app
 
 # Load the configuration
 config_file = '/home/setrock/setrock/satosa-config/proxy_conf.yaml'
 config = SATOSAConfig(config_file)
 
 # Create the SATOSA application
-app = SATOSABase(config)
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080)
+app = make_app(config)
