@@ -1,7 +1,7 @@
 module: satosa.frontends.openid_connect.OpenIDConnectFrontend
 name: oidc
 config:
-  signing_key_path: /home/oidc/keys/oidc/privkey.pem
+  signing_key_path: /home/setrock/keys/oidc/privkey.pem
   signing_key_id: frontend.key1
 
   # Defines the database connection URI for the databases:
@@ -30,7 +30,7 @@ config:
   # client_db_path: /home/oidc/client_db.json
 
   # if not specified, it is randomly generated on every startup
-  sub_hash_salt: 0odHMgRLTJZBHWafUU8kUIcPmaTMqMajEz3KjligpPpKplusgZ2fgwCrR2T0EXc3
+  sub_hash_salt: ${SATOSA_SUB_HASH_SALT}
 
   provider:
     client_registration_supported: Yes
