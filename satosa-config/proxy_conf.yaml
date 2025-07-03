@@ -1,19 +1,19 @@
-BASE: https://petrock.mit.edu
+BASE: https://setrock.shenshen.mit.edu
 
 COOKIE_STATE_NAME: "SATOSA_STATE"
 CONTEXT_STATE_DELETE: yes
-STATE_ENCRYPTION_KEY: "74z4EOtwXVM7FWvc7UP50OXHtsRap5sTJuuUcnL7P3UiqgaXHQuJfiPwUaTCa8oC"
+STATE_ENCRYPTION_KEY: "${SATOSA_STATE_ENCRYPTION_KEY}"
 
 cookies_samesite_compat:
   - ["SATOSA_STATE", "SATOSA_STATE_LEGACY"]
 
-INTERNAL_ATTRIBUTES: "/home/oidc/satosa-config/internal_attributes.yaml"
+INTERNAL_ATTRIBUTES: "/home/setrock/setrock/satosa-config/internal_attributes.yaml"
 
 BACKEND_MODULES:
-  - "/home/oidc/satosa-config/plugins/saml2_backend.yaml"
+  - "/home/setrock/setrock/satosa-config/plugins/saml2_backend.yaml"
 
 FRONTEND_MODULES:
-  - "/home/oidc/satosa-config/plugins/openid_connect_frontend.yaml"
+  - "/home/setrock/setrock/satosa-config/plugins/openid_connect_frontend.yaml"
 
 #MICRO_SERVICES:
 #  - "/home/oidc/satosa-config/microservices/static_attributes.yaml"
@@ -36,19 +36,19 @@ LOGGING:
       formatter: simple
     debug_file:
       class: logging.FileHandler
-      filename: satosa-debug.log
+      filename: /home/setrock/logs/satosa-debug.log
       encoding: utf8
       level: DEBUG
       formatter: simple
     error_file:
       class: logging.FileHandler
-      filename: satosa-error.log
+      filename: /home/setrock/logs/satosa-error.log
       encoding: utf8
       level: ERROR
       formatter: simple
     info_file:
       class: logging.handlers.RotatingFileHandler
-      filename: satosa-info.log
+      filename: /home/setrock/logs/satosa-info.log
       encoding: utf8
       maxBytes: 10485760 # 10MB
       backupCount: 20
