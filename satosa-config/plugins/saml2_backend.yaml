@@ -15,40 +15,40 @@ config:
   acs_selection_strategy: prefer_matching_host
 
   sp_config:
-    name: "Petrock" # touch -> pet, stone -> rock 
+    name: "SetRock" # touch -> pet, stone -> rock 
     description: "Touchstone-to-OIDC translation layer"
-    key_file: /home/oidc/keys/saml/sp-signing-key.pem
-    cert_file: /home/oidc/keys/saml/sp-signing-cert.pem
+    key_file: /home/setrock/keys/saml/sp-signing-key.pem
+    cert_file: /home/setrock/keys/saml/sp-signing-cert.pem
     encryption_keypairs:
-      - key_file: /home/oidc/keys/saml/sp-encrypt-key.pem
-        cert_file: /home/oidc/keys/saml/sp-encrypt-cert.pem
+      - key_file: /home/setrock/keys/saml/sp-encrypt-key.pem
+        cert_file: /home/setrock/keys/saml/sp-encrypt-cert.pem
     organization:
-      display_name: Student Information Processing Board
-      name: SIPB
-      url: 'https://sipb.mit.edu'
+      display_name: SetRock Authentication Service
+      name: SetRock
+      url: 'https://setrock.shenshen.mit.edu'
     contact_person:
       - contact_type: support
-        email_address: 'mailto:petrock@mit.edu'
+        email_address: 'mailto:shenshen@mit.edu'
 
     metadata:
       remote:
-        - url: 'https://okta.mit.edu/app/exkfuqmlzchKIVXFZ697/sso/saml/metadata'
+        - url: '${MIT_TOUCHSTONE_METADATA_URL}'
 
-    entityid: <base_url>/<name>/proxy_saml2_backend.xml
+    entityid: <base_url>/touchstone/proxy_saml2_backend.xml
     accepted_time_diff: 60 # TODO: aint this too much?
-    attribute_map_dir: /home/oidc/satosa-config/saml_attributes
+    attribute_map_dir: /home/setrock/setrock/satosa-config/saml_attributes
     service:
       sp:
         ui_info:
           display_name:
             - lang: en
-              text: "Petrock"
+              text: "SetRock"
           description:
             - lang: en
               text: "Touchstone-to-OIDC translation layer"
           information_url:
            - lang: en
-             text: "https://petrock.mit.edu/"
+             text: "https://setrock.shenshen.mit.edu/"
           # logo:
           #  text: "http://sp.logo.url/"
           #  width: "100"
