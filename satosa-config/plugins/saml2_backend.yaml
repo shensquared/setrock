@@ -28,7 +28,7 @@ config:
       url: 'https://setrock.shenshen.mit.edu'
     contact_person:
       - contact_type: support
-        email_address: 'mailto:shenshen@mit.edu'
+        email_address: 'mailto:setrock@mit.edu'
 
     metadata:
       remote:
