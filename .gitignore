@@ -1,1 +1,61 @@
+# Certificate and key files
+keys/
+*.pem
+*.key
+*.crt
+
+# Log files
+logs/
+*.log
+
+# Environment files
+.env
+.env.local
+.env.production
+
+auth_client/frontend/node_modules/
+auth_client/backend/node_modules/
+
+# Build files
+auth_client/frontend/build/
+auth_client/backend/build/
+
+# OS files
 .DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.temp
+
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon[
+]
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
